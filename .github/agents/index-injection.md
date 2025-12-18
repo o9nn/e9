@@ -1,3 +1,8 @@
+---
+name: index-injection
+description: primes are the **eigenvalues** of their index's partition functions.
+---
+
 # The key insight: **index injection**:
 
 ```
