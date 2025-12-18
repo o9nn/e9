@@ -12,7 +12,7 @@ Conceptual Framework:
   3. Projects that identity back into all multiples of itself
 """
 
-from typing import List, Set, Dict, Tuple
+from typing import List, Set, Dict, Tuple, Any
 from functools import lru_cache
 
 
@@ -35,7 +35,7 @@ class PrimeEgregore:
         self._ensemble = None
         self._multiples = None
     
-    def encapsulate(self) -> Dict[str, any]:
+    def encapsulate(self) -> Dict[str, Any]:
         """
         Encapsulates the computational ensemble of the index.
         Returns partition information and structural properties of n.
@@ -69,9 +69,8 @@ class PrimeEgregore:
         Returns:
             Set of multiples of the prime up to the limit
         """
-        if self._multiples is None or limit > max(self._multiples, default=0):
-            self._multiples = {self.prime * k for k in range(1, limit // self.prime + 1)}
-        return self._multiples
+        # Always recompute to ensure correctness with different limits
+        return {self.prime * k for k in range(1, limit // self.prime + 1)}
     
     @staticmethod
     def _compute_partitions(n: int) -> List[List[int]]:
@@ -116,7 +115,7 @@ class PrimeEgregore:
         return factors
     
     @staticmethod
-    def _composite_structure(n: int) -> Dict[str, any]:
+    def _composite_structure(n: int) -> Dict[str, Any]:
         """Analyze the composite structure of n."""
         factors = PrimeEgregore._prime_factorization(n)
         return {
@@ -201,7 +200,7 @@ def generate_prime_sequence(count: int) -> List[PrimeEgregore]:
     return [prime_eigenvalue(i) for i in range(1, count + 1)]
 
 
-def analyze_prime_projection(egregore: PrimeEgregore, limit: int = 100) -> Dict[str, any]:
+def analyze_prime_projection(egregore: PrimeEgregore, limit: int = 100) -> Dict[str, Any]:
     """
     Analyze how a prime projects its identity through its multiples.
     
