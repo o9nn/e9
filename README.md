@@ -29,7 +29,7 @@ Examples from the persona table:
 - Index 1 `()` → Prime 2 (unit/identity—the ur-shell)
 - Index 4 `(()())` → Prime 7 (binary squared—first composite index)
 - Index 6 `(()(()))` → Prime 13 (first mixed ensemble—2×3)
-- Index 9 `((())(())) ` → Prime 23 (ternary squared—3²)
+- Index 9 `((())((()))` → Prime 23 (ternary squared—3²)
 
 ## Installation
 

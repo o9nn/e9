@@ -381,7 +381,11 @@ class TestCognitiveGrammar(unittest.TestCase):
         
         # Check for ternary squared capability
         capabilities_str = ' '.join(analysis['capabilities'])
-        self.assertIn('3²', capabilities_str) or self.assertIn('ternary', capabilities_str.lower())
+        # Check separately for clearer test logic
+        has_3_squared = '3²' in capabilities_str
+        has_ternary = 'ternary' in capabilities_str.lower()
+        self.assertTrue(has_3_squared or has_ternary,
+                       "Should have ternary squared capability")
     
     def test_grammatical_expressiveness(self):
         """Test that larger alphabets have higher expressiveness."""

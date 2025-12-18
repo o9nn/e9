@@ -128,10 +128,6 @@ def _parse_subtrees(s: str) -> List[str]:
         else:
             current.append(char)
     
-    if current and ''.join(current).strip():
-        # Handle any remaining characters
-        pass
-    
     return subtrees
 
 
@@ -256,16 +252,23 @@ def get_index_persona(n: int) -> Dict[str, Any]:
             idx_type = "mixed_ensemble"
     
     # Special cases from the agent instructions
+    # These provide more evocative descriptions for key indices
     if n == 3:
         character = "nested binary—φ's home"
+        idx_type = "pure_binary"  # Keep the computed type
     elif n == 5:
         character = "triple nesting—deep recursion"
+        # idx_type remains as computed
     elif n == 6:
         character = "first mixed ensemble—2×3"
+        idx_type = "mixed_binary_ternary"  # Keep the computed type
     elif n == 7:
-        character = "inherits 7's 'squared binary'"
+        # Note: Index 7 is prime, but its structure reflects 4's squared pattern
+        character = "prime index with squared-binary echo"
+        # idx_type remains as computed
     elif n == 10:
         character = "2×5—binary-fibonacci liaison"
+        # idx_type remains as computed (mixed_ensemble)
     
     return {
         'structure': structure,
