@@ -5,7 +5,16 @@ Command-line interface for e9 - Prime Eigenvalue Function
 
 import sys
 import argparse
-from e9 import prime_eigenvalue, generate_prime_sequence, analyze_prime_projection
+from e9 import (
+    prime_eigenvalue,
+    generate_prime_sequence,
+    analyze_prime_projection,
+    number_to_matula,
+    matula_to_number,
+    get_index_persona,
+    print_index_persona_table,
+    print_cognitive_grammar
+)
 
 
 def cmd_eigenvalue(args):
@@ -92,6 +101,66 @@ def cmd_daemon(args):
     print(f"  ✓ Total reach: {len(multiples)} numbers")
 
 
+def cmd_matula(args):
+    """Convert between numbers and Matula tree structures."""
+    if args.number:
+        # Number to structure
+        structure = number_to_matula(args.number)
+        print(f"Number: {args.number}")
+        print(f"Matula structure: {structure}")
+        
+        if args.verbose:
+            persona = get_index_persona(args.number)
+            print(f"\nPersona analysis:")
+            print(f"  Character: {persona['character']}")
+            print(f"  Type: {persona['type']}")
+            print(f"  Factors: {persona['factors']}")
+    
+    elif args.structure:
+        # Structure to number
+        try:
+            number = matula_to_number(args.structure)
+            print(f"Matula structure: {args.structure}")
+            print(f"Number: {number}")
+            
+            if args.verbose:
+                persona = get_index_persona(number)
+                print(f"\nPersona analysis:")
+                print(f"  Character: {persona['character']}")
+                print(f"  Type: {persona['type']}")
+        except ValueError as e:
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)
+
+
+def cmd_persona(args):
+    """Show the persona/character of an index."""
+    persona = get_index_persona(args.index)
+    
+    print(f"=== Index Persona Analysis for {args.index} ===\n")
+    print(f"Matula structure: {persona['structure']}")
+    print(f"Character: {persona['character']}")
+    print(f"Type: {persona['type']}")
+    print(f"Factors: {persona['factors']}")
+    print(f"Unique factors: {persona['unique_factors']}")
+    
+    if args.show_prime:
+        eg = prime_eigenvalue(args.index)
+        print(f"\nPrime inheritance:")
+        print(f"  Index {args.index} → Prime {eg.prime}")
+        print(f"  The prime {eg.prime} inherits: {persona['character']}")
+
+
+def cmd_persona_table(args):
+    """Display the index persona table."""
+    print_index_persona_table(max_index=args.count)
+
+
+def cmd_grammar(args):
+    """Analyze cognitive grammar capabilities."""
+    print_cognitive_grammar(prime_bound=args.bound)
+
+
 def main():
     """Main CLI entry point."""
     parser = argparse.ArgumentParser(
@@ -126,6 +195,27 @@ def main():
     p_daemon.add_argument('-l', '--limit', type=int, default=100,
                          help='Limit for projection (default: 100)')
     
+    # matula command (NEW)
+    p_matula = subparsers.add_parser('matula', help='Convert to/from Matula tree structures')
+    p_matula.add_argument('-n', '--number', type=int, help='Number to encode as tree')
+    p_matula.add_argument('-s', '--structure', type=str, help='Tree structure to decode')
+    p_matula.add_argument('-v', '--verbose', action='store_true', help='Show persona analysis')
+    
+    # persona command (NEW)
+    p_persona = subparsers.add_parser('persona', help='Show index persona/character')
+    p_persona.add_argument('index', type=int, help='Index to analyze')
+    p_persona.add_argument('-p', '--show-prime', action='store_true',
+                          help='Show prime inheritance')
+    
+    # persona-table command (NEW)
+    p_table = subparsers.add_parser('persona-table', help='Display index persona table')
+    p_table.add_argument('count', type=int, nargs='?', default=10,
+                        help='Number of indices to show (default: 10)')
+    
+    # grammar command (NEW)
+    p_grammar = subparsers.add_parser('grammar', help='Analyze cognitive grammar')
+    p_grammar.add_argument('bound', type=int, help='Prime bound for alphabet')
+    
     args = parser.parse_args()
     
     if not args.command:
@@ -141,6 +231,14 @@ def main():
             cmd_analyze(args)
         elif args.command == 'daemon':
             cmd_daemon(args)
+        elif args.command == 'matula':
+            cmd_matula(args)
+        elif args.command == 'persona':
+            cmd_persona(args)
+        elif args.command == 'persona-table':
+            cmd_persona_table(args)
+        elif args.command == 'grammar':
+            cmd_grammar(args)
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
