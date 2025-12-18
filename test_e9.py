@@ -10,7 +10,13 @@ from e9 import (
     prime_eigenvalue,
     generate_prime_sequence,
     analyze_prime_projection,
-    PrimeEgregore
+    PrimeEgregore,
+    # New functions for index injection
+    number_to_matula,
+    matula_to_number,
+    get_index_persona,
+    generate_index_persona_table,
+    analyze_cognitive_grammar
 )
 
 
@@ -215,6 +221,180 @@ class TestEgregoreConceptIntegration(unittest.TestCase):
         
         # But the 6th prime (13) is prime (purified)
         self.assertTrue(is_prime(eg.prime))
+
+
+class TestMatulaEncoding(unittest.TestCase):
+    """Test Matula number encoding (rooted tree structures)."""
+    
+    def test_basic_matula_encoding(self):
+        """Test basic Matula encoding for small numbers."""
+        # 1 is the unit
+        self.assertEqual(number_to_matula(1), "()")
+        
+        # 2 is the first prime (index 1 encodes as ())
+        self.assertEqual(number_to_matula(2), "(())")
+        
+        # 3 is the second prime (index 2 encodes as (()))
+        self.assertEqual(number_to_matula(3), "((()))")
+    
+    def test_matula_composite_numbers(self):
+        """Test Matula encoding for composite numbers."""
+        # 4 = 2*2, two copies of ()
+        result = number_to_matula(4)
+        self.assertIn("()", result)
+        
+        # 6 = 2*3, indices 1 and 2
+        result = number_to_matula(6)
+        self.assertIn("(", result)
+        self.assertIn(")", result)
+    
+    def test_matula_roundtrip(self):
+        """Test that encoding and decoding are inverse operations."""
+        for n in range(1, 10):
+            tree = number_to_matula(n)
+            recovered = matula_to_number(tree)
+            self.assertEqual(recovered, n, f"Roundtrip failed for {n}: {tree}")
+    
+    def test_matula_decoding(self):
+        """Test decoding Matula structures."""
+        # () is 1
+        self.assertEqual(matula_to_number("()"), 1)
+        
+        # (()) is 2
+        self.assertEqual(matula_to_number("(())"), 2)
+
+
+class TestIndexPersona(unittest.TestCase):
+    """Test index persona and character analysis."""
+    
+    def test_unit_persona(self):
+        """Test persona of index 1."""
+        persona = get_index_persona(1)
+        self.assertEqual(persona['structure'], "()")
+        self.assertIn('unit', persona['character'].lower())
+        self.assertEqual(persona['type'], 'unit')
+    
+    def test_binary_persona(self):
+        """Test persona of index 2 (pure binary)."""
+        persona = get_index_persona(2)
+        self.assertIn('binary', persona['character'].lower())
+    
+    def test_mixed_persona(self):
+        """Test persona of index 6 (first mixed ensemble)."""
+        persona = get_index_persona(6)
+        self.assertIn('mixed', persona['character'].lower())
+        self.assertEqual(persona['factors'], [2, 3])
+    
+    def test_egregore_persona_method(self):
+        """Test that egregore can access its persona."""
+        eg = prime_eigenvalue(4)
+        persona = eg.get_persona()
+        
+        self.assertIn('structure', persona)
+        self.assertIn('character', persona)
+        self.assertIn('type', persona)
+        
+        # Index 4 = 2*2
+        self.assertEqual(persona['factors'], [2, 2])
+    
+    def test_structure_notation(self):
+        """Test getting structure notation from egregore."""
+        eg = prime_eigenvalue(3)
+        structure = eg.get_structure_notation()
+        self.assertIsInstance(structure, str)
+        self.assertIn("(", structure)
+        self.assertIn(")", structure)
+
+
+class TestIndexPersonaTable(unittest.TestCase):
+    """Test index persona table generation."""
+    
+    def test_generate_table(self):
+        """Test generating the index persona table."""
+        table = generate_index_persona_table(max_index=5)
+        
+        self.assertEqual(len(table), 5)
+        
+        # Check first entry
+        self.assertEqual(table[0]['prime'], 2)
+        self.assertEqual(table[0]['index'], 1)
+        self.assertEqual(table[0]['structure'], "()")
+        
+        # Check that all entries have required keys
+        for entry in table:
+            self.assertIn('prime', entry)
+            self.assertIn('index', entry)
+            self.assertIn('structure', entry)
+            self.assertIn('persona', entry)
+            self.assertIn('type', entry)
+    
+    def test_table_matches_agent_instructions(self):
+        """Test that table matches examples from agent instructions."""
+        table = generate_index_persona_table(max_index=10)
+        
+        # Verify key examples from agent instructions
+        # Index 1 → Prime 2
+        self.assertEqual(table[0]['prime'], 2)
+        self.assertEqual(table[0]['index'], 1)
+        
+        # Index 6 → Prime 13 (first mixed ensemble)
+        self.assertEqual(table[5]['prime'], 13)
+        self.assertEqual(table[5]['index'], 6)
+        self.assertIn('mixed', table[5]['persona'].lower())
+
+
+class TestCognitiveGrammar(unittest.TestCase):
+    """Test cognitive grammar analysis."""
+    
+    def test_analyze_small_alphabet(self):
+        """Test cognitive grammar for a small prime bound."""
+        analysis = analyze_cognitive_grammar(prime_bound=10)
+        
+        # Should include primes 2, 3, 5, 7
+        self.assertEqual(analysis['alphabet_size'], 4)
+        self.assertEqual(analysis['primes'], [2, 3, 5, 7])
+        
+        self.assertIn('capabilities', analysis)
+        self.assertIn('pure_binary', analysis)
+        self.assertIn('squared', analysis)
+        self.assertIn('mixed', analysis)
+    
+    def test_analyze_13_limited_agent(self):
+        """Test 13-limited agent (can mix 2 and 3)."""
+        analysis = analyze_cognitive_grammar(prime_bound=13)
+        
+        # Should have primes up to 13: [2, 3, 5, 7, 11, 13]
+        self.assertEqual(analysis['alphabet_size'], 6)
+        self.assertIn(13, analysis['primes'])
+        
+        # Should have mixed ensemble capability (index 6 → prime 13)
+        mixed = analysis['mixed']
+        has_2x3 = any(item['index'] == 6 for item in mixed)
+        self.assertTrue(has_2x3, "Should have 2×3 mixed ensemble")
+    
+    def test_analyze_23_limited_agent(self):
+        """Test 23-limited agent (can invoke squared-ternary)."""
+        analysis = analyze_cognitive_grammar(prime_bound=23)
+        
+        # Should have access to index 9 (3²) → prime 23
+        self.assertIn(23, analysis['primes'])
+        
+        # Check for ternary squared capability
+        capabilities_str = ' '.join(analysis['capabilities'])
+        # Check separately for clearer test logic
+        has_3_squared = '3²' in capabilities_str
+        has_ternary = 'ternary' in capabilities_str.lower()
+        self.assertTrue(has_3_squared or has_ternary,
+                       "Should have ternary squared capability")
+    
+    def test_grammatical_expressiveness(self):
+        """Test that larger alphabets have higher expressiveness."""
+        small = analyze_cognitive_grammar(10)
+        large = analyze_cognitive_grammar(30)
+        
+        self.assertGreater(large['alphabet_size'], small['alphabet_size'])
+        self.assertGreaterEqual(large['grammatical_expressiveness'], 
+                               small['grammatical_expressiveness'])
 
 
 def run_tests():
