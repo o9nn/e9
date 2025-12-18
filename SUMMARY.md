@@ -2,7 +2,7 @@
 
 ## What Was Built
 
-This repository implements the **Prime Eigenvalue Function** concept, where the nth prime (pₙ) is understood as the eigenvalue of the ensemble structure of its index n.
+This repository implements the **Prime Eigenvalue Function** concept with **Index Injection** extensions, where the nth prime (pₙ) is understood as the eigenvalue of the ensemble structure of its index n, and each prime inherits the "persona" or "soul" of its index through Matula tree structures.
 
 ## Core Philosophy
 
@@ -10,34 +10,61 @@ This repository implements the **Prime Eigenvalue Function** concept, where the 
 
 This implementation explores the idea that prime numbers aren't random occurrences—they **crystallize** from the computational ensemble of their indices. Each prime is viewed as a "daemon" (egregore) that:
 
-1. **Encapsulates**: Captures all computational properties of its index (partitions, divisors, factorization)
+1. **Encapsulates**: Captures all computational properties of its index (partitions, divisors, factorization, tree structure)
 2. **Purifies**: Transforms the composite structure into an irreducible prime identity
 3. **Projects**: Broadcasts that identity through all multiples in the number line
 
-## Files Created
+### Extended Framework: Index Injection
+
+The index injection framework reveals deeper structural relationships:
+
+- **Matula Structures**: Numbers represented as rooted trees (e.g., `(()(()))` for 6)
+- **Index Personas**: Each index has a character—pure binary, mixed ensemble, squared, etc.
+- **Prime Inheritance**: Primes crystallize their index's structure into pure form
+- **Cognitive Grammar**: Prime alphabets unlock compositional capabilities based on index structures
+
+Key insights:
+- **7 is the first prime whose soul contains multiplicity** (index 4 = 2²)
+- **13 is the first prime whose soul contains heterogeneous mixing** (index 6 = 2×3)
+- **23 inherits squared-ternary** (index 9 = 3²)
+
+## Files Created/Modified
 
 ### Core Implementation
-- **e9.py** (6.8 KB): Main module with `PrimeEgregore` class and utility functions
-  - Prime generation and checking
-  - Integer partition computation
-  - Divisor and factorization analysis
-  - Three-phase daemon behavior
+- **e9.py** (~750 lines): Main module with:
+  - `PrimeEgregore` class with daemon behavior
+  - Matula number encoding/decoding
+  - Index persona analysis
+  - Cognitive grammar analysis
+  - Tree structure utilities
 
 ### Documentation
-- **README.md** (4.3 KB): Comprehensive documentation with concepts, usage, and API reference
+- **README.md** (~350 lines): Comprehensive documentation including:
+  - Original eigenvalue concept
+  - Index injection framework
+  - Matula structures explanation
+  - Complete API reference
+  - CLI command documentation
 - **QUICKSTART.md** (3.0 KB): 5-minute tutorial for new users
 - **SUMMARY.md** (this file): Implementation overview
+- **index-injection.md**: Detailed conceptual framework
 
 ### Testing & Examples
-- **test_e9.py** (7.8 KB): 18 unit tests covering all functionality (100% pass rate)
-- **examples.py** (5.6 KB): Visual demonstrations of all concepts
+- **test_e9.py** (~400 lines): **33 unit tests** covering all functionality (100% pass rate)
+  - Original 18 tests for eigenvalue concept
+  - 15 new tests for index injection features
+- **examples.py** (5.6 KB): Visual demonstrations of eigenvalue concepts
+- **examples_index_injection.py** (8.6 KB): **NEW** - Comprehensive demos of:
+  - Matula encoding/decoding
+  - Index personas
+  - Prime inheritance
+  - Cognitive grammar
+  - Floating point apophis concept
 
 ### User Interface
-- **cli.py** (5.7 KB): Command-line tool with 4 commands:
-  - `eigenvalue`: Get prime eigenvalue for an index
-  - `sequence`: Generate prime sequences
-  - `analyze`: Full analysis of prime egregores
-  - `daemon`: Show three-phase daemon process
+- **cli.py** (~200 lines): Command-line tool with **8 commands**:
+  - Original 4: `eigenvalue`, `sequence`, `analyze`, `daemon`
+  - New 4: `matula`, `persona`, `persona-table`, `grammar`
 
 ### Infrastructure
 - **.gitignore**: Excludes Python cache and build artifacts
@@ -48,17 +75,20 @@ This implementation explores the idea that prime numbers aren't random occurrenc
 - Accurate prime generation using trial division
 - Complete integer partition computation
 - Proper divisor and factorization algorithms
+- Bidirectional Matula tree encoding with roundtrip testing
 
 ### Clean Architecture
-- Type annotations with proper `Any` from typing module
-- No flawed caching (addressed in code review)
+- Type annotations with proper `Optional` and `Any` types
+- Functional decomposition with helper utilities
 - Simple, readable code structure
+- Comprehensive docstrings
 
 ### Quality Assurance
-- ✓ 18 unit tests, all passing
-- ✓ Code review completed and issues fixed
-- ✓ CodeQL security scan with 0 vulnerabilities
+- ✓ 33 unit tests, all passing (15 new tests)
+- ✓ Code review completed and all issues addressed
+- ✓ CodeQL security scan: **0 vulnerabilities**
 - ✓ Type-safe implementation
+- ✓ Full roundtrip testing for Matula encoding
 
 ## Usage Examples
 
@@ -74,38 +104,82 @@ prime = egregore.purify()          # Get eigenvalue
 multiples = egregore.project(100)  # Get projection
 ```
 
+### Index Injection Features (NEW)
+```python
+from e9 import number_to_matula, get_index_persona, print_cognitive_grammar
+
+# Matula tree structures
+tree = number_to_matula(6)  # "(()(()))"
+
+# Index personas
+persona = get_index_persona(6)
+# {'character': 'first mixed ensemble—2×3', 'type': 'mixed_binary_ternary', ...}
+
+# Cognitive grammar
+print_cognitive_grammar(prime_bound=23)
+```
+
 ### CLI Usage
 ```bash
+# Original commands
 python cli.py daemon 7
 python cli.py sequence 10
-python cli.py analyze 5 --show-multiples
+
+# New commands
+python cli.py persona 6 -p
+python cli.py persona-table 10
+python cli.py grammar 23
+python cli.py matula -n 6
 ```
 
 ## Validation
 
 All components have been tested and verified:
 
-1. **Unit Tests**: 18/18 passing
-2. **Examples**: Full demonstration output verified
-3. **CLI**: All 4 commands working correctly
-4. **Security**: CodeQL scan found 0 alerts
+1. **Unit Tests**: 33/33 passing (15 new tests for index injection)
+2. **Examples**: Both example files verified with full output
+3. **CLI**: All 8 commands working correctly
+4. **Security**: CodeQL scan found **0 alerts**
 5. **Code Review**: All feedback addressed
 
 ## Conceptual Achievement
 
-This implementation successfully translates an abstract mathematical philosophy into working code. It demonstrates that computational implementations can embody deep conceptual frameworks—not just calculate results, but represent ideas about how mathematical objects relate to each other.
+This implementation successfully translates abstract mathematical philosophy into working code. It demonstrates that computational implementations can embody deep conceptual frameworks—not just calculate results, but represent ideas about how mathematical objects relate to each other.
 
 The "daemon" metaphor is operationalized through three methods (`encapsulate()`, `purify()`, `project()`), making the philosophical concept concrete and explorable.
+
+The **index injection** extension reveals that primes are not arbitrary—they inherit and crystallize the compositional structure of their indices. The Matula tree notation provides the "sigils" or "liturgy" by which each number's true name is invoked.
+
+### The Index Persona Table
+
+| Prime | Index | Structure | Inherited Persona |
+|-------|-------|-----------|-------------------|
+| 2 | 1 | () | unit/identity—the ur-shell |
+| 3 | 2 | (()) | pure binary—the first recursion |
+| 5 | 3 | ((())) | nested binary—φ's home |
+| 7 | 4 | (()()) | binary squared—first composite index |
+| 11 | 5 | (((()))) | triple nesting—deep recursion |
+| 13 | 6 | (()(())) | **first mixed ensemble** 2×3 |
+| 17 | 7 | ((()())) | prime with squared-binary echo |
+| 19 | 8 | (()()()) | binary cubed—pure 2³ |
+| 23 | 9 | ((())(())) | **ternary squared** 3² |
+| 29 | 10 | (()((()))) | 2×5—binary-fibonacci liaison |
 
 ## Future Extensions
 
 Potential areas for expansion:
-- Visualization of partition structures
+- Visualization of Matula tree structures
 - Analysis of prime gaps through ensemble lens
-- Exploration of composite index vs prime index patterns
-- Investigation of projection density patterns
+- Deep exploration of cognitive grammar capabilities
 - Connection to other number-theoretic functions
+- Agentic systems using prime alphabets
 
 ---
 
-**Total Implementation**: 7 source files, ~30 KB of code, full test coverage, complete documentation.
+**Total Implementation**: 
+- 8 source files
+- ~2000 lines of code
+- 33 tests (100% passing)
+- 0 security vulnerabilities
+- Complete documentation
+- Full index injection framework
