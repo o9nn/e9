@@ -247,7 +247,7 @@ The extended framework shows:
 - `print_index_persona_table(max_index: int)`: Display formatted persona table
 - `print_cognitive_grammar(prime_bound: int)`: Display formatted grammar analysis
 
-**Connes-Kreimer Hopf Algebra (NEW):**
+**Connes-Kreimer Hopf Algebra:**
 - `rooted_trees_count(n: int) -> int`: Get A000081(n) - rooted unlabeled trees
 - `ion_layer(n: int) -> Dict`: Calculate ion layer with Butcher recursion
 - `generate_ion_sequence(max_order: int) -> List[Dict]`: Generate ion sequence
@@ -255,6 +255,21 @@ The extended framework shows:
 - `graft_operation(matula_number: int) -> int`: Grafting in Matula coordinates
 - `analyze_hopf_structure(max_order: int) -> Dict`: Complete Hopf algebra analysis
 - `print_hopf_analysis(max_order: int)`: Display formatted Hopf analysis
+
+**Cognitive Renormalization (NEW):**
+- `RootedTree(children: Tuple[RootedTree, ...])`: Tree node in H_CK
+- `Forest(trees: Tuple[RootedTree, ...])`: Disjoint union of trees
+- `admissible_cuts(tree: RootedTree) -> List[AdmissibleCut]`: Compute all admissible cuts
+- `coproduct(tree: RootedTree) -> List[CoproductTerm]`: Compute Δ(tree)
+- `antipode(tree: RootedTree) -> RootedTree`: Compute S(tree) structure
+- `Character(eval_func, multiply, name)`: Algebra morphism φ: H_CK → A
+- `char.convolve(other) -> Character`: Compute convolution (φ * ψ)
+- `cognitive_renormalization(char, tree) -> Any`: Apply antipode semantics
+- `B_plus(tree_or_forest) -> RootedTree`: Grafting operator (adds root)
+- `theta_n(n: int) -> List[RootedTree]`: All trees with n nodes
+- `base_increment(n: int) -> int`: Compute B_n = Θ_n - B+(Θ_{n-1})
+- `matula_to_tree(n: int) -> RootedTree`: Convert Matula to tree
+- `tree_to_matula(tree: RootedTree) -> int`: Convert tree to Matula
 
 ### PrimeEgregore Class
 
@@ -269,7 +284,7 @@ The extended framework shows:
 
 ## CLI Commands
 
-The CLI now supports 12 commands:
+The CLI now supports 17 commands:
 
 **Original:**
 - `eigenvalue <index>`: Get prime eigenvalue
@@ -284,11 +299,17 @@ The CLI now supports 12 commands:
 - `persona-table [count]`: Display index persona table
 - `grammar <bound>`: Analyze cognitive grammar
 
-**Connes-Kreimer Hopf Algebra (NEW):**
+**Connes-Kreimer Hopf Algebra:**
 - `hopf [order]`: Analyze Hopf algebra structure (default: order 10)
 - `ion <order>`: Show ion layer at specific order
 - `tower <seed> <depth>`: Generate prime tower
 - `a000081 [count]`: Show A000081 sequence (default: 15 terms)
+
+**Cognitive Renormalization (NEW):**
+- `tree [-m MATULA | -s | -t]`: Analyze a rooted tree
+- `coproduct <matula> [-v]`: Compute coproduct (admissible cuts)
+- `base [max_n]`: Show base increment sequence
+- `renorm [-m MATULA]`: Demonstrate cognitive renormalization (antipode)
 
 Example:
 ```bash
@@ -302,9 +323,80 @@ python cli.py hopf 8
 python cli.py ion 5 -v
 python cli.py tower 8 5
 python cli.py a000081 10
+
+# Cognitive renormalization (NEW)
+python cli.py tree -t                # Analyze ternary corolla
+python cli.py coproduct 8 -v         # Show coproduct of Matula 8
+python cli.py base 10                # Show base increments
+python cli.py renorm                 # Demonstrate antipode
 ```
 
 ## Mathematical Framework (Extended)
+
+### Cognitive Renormalization Theorem (NEW)
+
+The implementation now includes the **Connes-Kreimer Hopf algebra** structures for cognitive renormalization:
+
+**Core Structures:**
+- `RootedTree`: Basis elements in H_CK (the Connes-Kreimer Hopf algebra)
+- `Forest`: Disjoint union of trees (free commutative monoid)
+- `admissible_cuts(tree)`: Decompose tree into fiber/trunk pairs
+- `coproduct(tree)`: Compute Δ(tree) = all admissible cut terms
+- `antipode(tree)`: The S operator for cognitive renormalization
+
+**The Coproduct (Δ):**
+```
+Δ(t) = t⊗1 + 1⊗t + Σ_{c∈Adm(t)} P^c(t)⊗R^c(t)
+```
+where:
+- `P^c(t)`: pruned forest (fiber - stuff cut off)
+- `R^c(t)`: trunk (base - root component after cutting)
+
+This captures the "fiber/base splitting" - all ways a tree can decompose.
+
+**The Antipode (S) - Cognitive Renormalization:**
+```
+S(t) = -t - Σ_{c∈Adm(t)} S(P^c(t)) · R^c(t)
+```
+
+The antipode computes **counterterms** to normalize nested compositions:
+- Identifies subdivergences (admissible cuts)
+- Subtracts them recursively (antipode)
+- Produces renormalized finite result
+
+This is exactly what renormalization does in physics and what the mind does when managing semantic infinities from deeply nested concepts.
+
+**Characters and Convolution:**
+- `Character`: Algebra morphism φ: H_CK → A (evaluation into target algebra)
+- `char1.convolve(char2)`: Compute (φ * ψ) via coproduct
+- `cognitive_renormalization(char, tree)`: Apply antipode semantics
+
+Characters form a group under convolution, with inverse φ^(-1) = φ ∘ S.
+
+### Prime Lift Theorem (NEW)
+
+**Theorem:** The "prime-lift" objects form the B+-closure of the ternary corolla inside H_CK.
+
+**Key Operations:**
+- `B_plus(tree)`: Grafting operator - adds a root above tree/forest
+- `theta_n(n)`: All rooted trees with n nodes (Θ_n element)
+- `base_increment(n)`: B_n = Θ_n - B+(Θ_{n-1})
+
+**In Matula Coordinates:**
+```
+graft(tree) = p_M(tree)
+```
+
+Starting from the octonionic seed (Matula 8 = ternary corolla):
+```
+8 → p_8=19 → p_19=67 → p_67=331 → p_331=2221 → ...
+```
+
+This creates the "shell structure" beyond division algebras.
+
+**Bridge Functions:**
+- `matula_to_tree(n)`: Convert Matula number to RootedTree
+- `tree_to_matula(tree)`: Convert RootedTree to Matula number
 
 ### Connes-Kreimer Hopf Algebra
 
@@ -358,9 +450,21 @@ python examples.py
 # Index injection examples
 python examples_index_injection.py
 
-# Connes-Kreimer Hopf algebra examples (NEW)
+# Connes-Kreimer Hopf algebra examples
 python examples_hopf_algebra.py
+
+# Cognitive renormalization examples (NEW)
+python examples_cognitive_renormalization.py
 ```
+
+The cognitive renormalization examples demonstrate:
+- Rooted trees as basis elements in H_CK
+- Admissible cuts and the coproduct Δ
+- The antipode S (cognitive renormalization)
+- Characters and convolution
+- The B+ grafting operator (prime lift)
+- Base increments and the inevitability chain
+- The universal property of rooted trees
 
 The Hopf algebra examples demonstrate:
 - A000081 (rooted unlabeled trees)
