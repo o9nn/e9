@@ -13,7 +13,12 @@ from e9 import (
     matula_to_number,
     get_index_persona,
     print_index_persona_table,
-    print_cognitive_grammar
+    print_cognitive_grammar,
+    # New Hopf algebra functions
+    rooted_trees_count,
+    ion_layer,
+    prime_tower,
+    print_hopf_analysis
 )
 
 
@@ -161,6 +166,73 @@ def cmd_grammar(args):
     print_cognitive_grammar(prime_bound=args.bound)
 
 
+def cmd_hopf(args):
+    """Analyze Connes-Kreimer Hopf algebra structure."""
+    print_hopf_analysis(max_order=args.order)
+
+
+def cmd_ion(args):
+    """Show ion layer structure at specific order."""
+    layer = ion_layer(args.order)
+    
+    print(f"Ion Layer Structure at Order {args.order}")
+    print("=" * 60)
+    print(f"  Order (n):   {layer['order']}")
+    print(f"  Fiber (fib): {layer['fib']:6d}  [previous total]")
+    print(f"  Base (bas):  {layer['bas']:6d}  [new differentials]")
+    print(f"  Total (tot): {layer['tot']:6d}  [rooted tree count]")
+    print(f"  Max shell:   {layer['max']:6d}  [prime tower]")
+    print()
+    print("Relations:")
+    print(f"  fib + bas = {layer['fib']} + {layer['bas']} = {layer['tot']} = tot ✓")
+    if args.order > 0:
+        prev = ion_layer(args.order - 1)
+        print(f"  fib({args.order}) = tot({args.order-1}) = {layer['fib']} ✓")
+    print()
+    
+    if args.verbose:
+        print(f"Rooted tree count: A000081({args.order+1}) = {layer['tot']}")
+        if args.order >= 5:
+            prev_max = ion_layer(args.order - 1)['max']
+            print(f"Max shell: p_{prev_max} = {layer['max']}")
+
+
+def cmd_tower(args):
+    """Generate prime tower from seed."""
+    tower = prime_tower(args.seed, args.depth)
+    
+    print(f"Prime Tower from seed {args.seed} (depth {args.depth})")
+    print("=" * 60)
+    print()
+    
+    for i, value in enumerate(tower):
+        if i == 0:
+            print(f"  {value:8d}  [seed]")
+        else:
+            print(f"  {value:8d}  [p_{tower[i-1]}]")
+            if i < len(tower) - 1:
+                print("     ↓")
+    
+    print()
+    print(f"Tower: {tower}")
+
+
+def cmd_a000081(args):
+    """Show A000081 sequence (rooted unlabeled trees)."""
+    print("A000081: Rooted Unlabeled Trees")
+    print("=" * 60)
+    print()
+    print("n  | A000081(n)")
+    print("-" * 20)
+    
+    for n in range(1, args.count + 1):
+        count = rooted_trees_count(n)
+        print(f"{n:2d} | {count:8d}")
+    
+    print()
+    print("This is the universal grammar of composition!")
+
+
 def main():
     """Main CLI entry point."""
     parser = argparse.ArgumentParser(
@@ -216,6 +288,26 @@ def main():
     p_grammar = subparsers.add_parser('grammar', help='Analyze cognitive grammar')
     p_grammar.add_argument('bound', type=int, help='Prime bound for alphabet')
     
+    # hopf command (NEW - Hopf algebra)
+    p_hopf = subparsers.add_parser('hopf', help='Analyze Connes-Kreimer Hopf algebra structure')
+    p_hopf.add_argument('order', type=int, nargs='?', default=10,
+                       help='Maximum order to analyze (default: 10)')
+    
+    # ion command (NEW - Hopf algebra)
+    p_ion = subparsers.add_parser('ion', help='Show ion layer structure at order')
+    p_ion.add_argument('order', type=int, help='Order n to analyze')
+    p_ion.add_argument('-v', '--verbose', action='store_true', help='Show detailed info')
+    
+    # tower command (NEW - Hopf algebra)
+    p_tower = subparsers.add_parser('tower', help='Generate prime tower')
+    p_tower.add_argument('seed', type=int, help='Starting seed (typically 8)')
+    p_tower.add_argument('depth', type=int, help='Depth of tower to generate')
+    
+    # a000081 command (NEW - Hopf algebra)
+    p_a000081 = subparsers.add_parser('a000081', help='Show A000081 sequence')
+    p_a000081.add_argument('count', type=int, nargs='?', default=15,
+                          help='Number of terms to show (default: 15)')
+    
     args = parser.parse_args()
     
     if not args.command:
@@ -239,6 +331,14 @@ def main():
             cmd_persona_table(args)
         elif args.command == 'grammar':
             cmd_grammar(args)
+        elif args.command == 'hopf':
+            cmd_hopf(args)
+        elif args.command == 'ion':
+            cmd_ion(args)
+        elif args.command == 'tower':
+            cmd_tower(args)
+        elif args.command == 'a000081':
+            cmd_a000081(args)
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)

@@ -16,7 +16,14 @@ from e9 import (
     matula_to_number,
     get_index_persona,
     generate_index_persona_table,
-    analyze_cognitive_grammar
+    analyze_cognitive_grammar,
+    # New functions for Connes-Kreimer Hopf algebra
+    rooted_trees_count,
+    ion_layer,
+    generate_ion_sequence,
+    prime_tower,
+    graft_operation,
+    analyze_hopf_structure
 )
 
 
@@ -395,6 +402,155 @@ class TestCognitiveGrammar(unittest.TestCase):
         self.assertGreater(large['alphabet_size'], small['alphabet_size'])
         self.assertGreaterEqual(large['grammatical_expressiveness'], 
                                small['grammatical_expressiveness'])
+
+
+class TestHopfAlgebra(unittest.TestCase):
+    """Test Connes-Kreimer Hopf algebra and rooted tree functions."""
+    
+    def test_rooted_trees_count_known_values(self):
+        """Test A000081 sequence with known values."""
+        # First few values of A000081
+        expected = [0, 1, 1, 2, 4, 9, 20, 48, 115, 286, 719]
+        for n, expected_count in enumerate(expected):
+            self.assertEqual(rooted_trees_count(n), expected_count,
+                           f"A000081({n}) should be {expected_count}")
+    
+    def test_rooted_trees_count_positive(self):
+        """Test that rooted tree counts are always positive for n>0."""
+        for n in range(1, 15):
+            self.assertGreater(rooted_trees_count(n), 0)
+    
+    def test_rooted_trees_count_increasing(self):
+        """Test that tree counts are non-decreasing and eventually strictly increasing."""
+        # A000081: 0, 1, 1, 2, 4, 9, 20, ...
+        # Note: values at n=1 and n=2 are both 1, so not strictly increasing
+        prev = rooted_trees_count(2)
+        for n in range(3, 12):
+            current = rooted_trees_count(n)
+            self.assertGreater(current, prev)
+            prev = current
+    
+    def test_ion_layer_structure(self):
+        """Test ion layer returns correct structure."""
+        layer = ion_layer(5)
+        
+        self.assertIn('order', layer)
+        self.assertIn('fib', layer)
+        self.assertIn('bas', layer)
+        self.assertIn('tot', layer)
+        self.assertIn('max', layer)
+        self.assertEqual(layer['order'], 5)
+    
+    def test_ion_layer_base_case(self):
+        """Test ion layer base case (n=0)."""
+        layer = ion_layer(0)
+        
+        self.assertEqual(layer['fib'], 0)
+        self.assertEqual(layer['bas'], 1)
+        self.assertEqual(layer['tot'], 1)
+        self.assertEqual(layer['max'], 1)
+    
+    def test_ion_layer_butcher_recursion(self):
+        """Test that ion layer follows Butcher recursion: fib(n) = tot(n-1)."""
+        for n in range(1, 8):
+            layer_n = ion_layer(n)
+            layer_prev = ion_layer(n - 1)
+            
+            # fib(n) should equal tot(n-1)
+            self.assertEqual(layer_n['fib'], layer_prev['tot'])
+    
+    def test_ion_layer_decomposition(self):
+        """Test that tot = fib + bas."""
+        for n in range(0, 10):
+            layer = ion_layer(n)
+            self.assertEqual(layer['tot'], layer['fib'] + layer['bas'])
+    
+    def test_ion_layer_known_values(self):
+        """Test ion layer with specific known values from notes."""
+        # From notes-clo45-10.md
+        layer_4 = ion_layer(4)
+        self.assertEqual(layer_4['tot'], 9)  # A000081(5)
+        self.assertEqual(layer_4['fib'], 4)
+        self.assertEqual(layer_4['bas'], 5)
+        self.assertEqual(layer_4['max'], 8)  # Octonionic seed
+        
+        layer_5 = ion_layer(5)
+        self.assertEqual(layer_5['tot'], 20)  # A000081(6)
+        self.assertEqual(layer_5['fib'], 9)
+        self.assertEqual(layer_5['bas'], 11)
+        self.assertEqual(layer_5['max'], 19)  # p_8 = 19
+    
+    def test_generate_ion_sequence(self):
+        """Test generation of ion sequence."""
+        seq = generate_ion_sequence(5)
+        
+        self.assertEqual(len(seq), 6)  # 0 through 5
+        self.assertEqual(seq[0]['order'], 0)
+        self.assertEqual(seq[5]['order'], 5)
+    
+    def test_prime_tower_octonionic(self):
+        """Test prime tower starting from octonionic seed (8)."""
+        tower = prime_tower(8, 5)
+        
+        # Expected: 8 → 19 → 67 → 331 → 2221 → 19577
+        expected = [8, 19, 67, 331, 2221, 19577]
+        self.assertEqual(tower, expected)
+    
+    def test_prime_tower_small_seed(self):
+        """Test prime tower with smaller seed."""
+        tower = prime_tower(3, 3)
+        
+        # 3 → p_3=5 → p_5=11 → p_11=31
+        expected = [3, 5, 11, 31]
+        self.assertEqual(tower, expected)
+    
+    def test_prime_tower_length(self):
+        """Test prime tower has correct length."""
+        depth = 7
+        tower = prime_tower(4, depth)
+        self.assertEqual(len(tower), depth + 1)  # seed + depth iterations
+    
+    def test_graft_operation(self):
+        """Test the grafting operation."""
+        # graft(8) = p_8 = 19
+        self.assertEqual(graft_operation(8), 19)
+        
+        # graft(19) = p_19 = 67
+        self.assertEqual(graft_operation(19), 67)
+        
+        # graft(3) = p_3 = 5
+        self.assertEqual(graft_operation(3), 5)
+    
+    def test_analyze_hopf_structure(self):
+        """Test Hopf structure analysis."""
+        analysis = analyze_hopf_structure(8)
+        
+        self.assertIn('ion_sequence', analysis)
+        self.assertIn('sequences', analysis)
+        self.assertIn('prime_tower', analysis)
+        self.assertIn('base_gaps', analysis)
+        self.assertIn('mathematical_context', analysis)
+        
+        # Check mathematical context
+        context = analysis['mathematical_context']
+        self.assertEqual(context['basis_sequence'], 'OEIS A000081 (rooted unlabeled trees)')
+        self.assertEqual(context['hopf_algebra'], 'Connes-Kreimer H_CK')
+        
+        # Check sequences are consistent
+        sequences = analysis['sequences']
+        self.assertEqual(len(sequences['order']), 9)  # 0-8
+        self.assertEqual(len(sequences['fib']), 9)
+        self.assertEqual(len(sequences['bas']), 9)
+        self.assertEqual(len(sequences['tot']), 9)
+        self.assertEqual(len(sequences['max']), 9)
+    
+    def test_hopf_structure_octonionic_seed(self):
+        """Test that analysis identifies octonionic seed correctly."""
+        analysis = analyze_hopf_structure(5)
+        
+        self.assertEqual(analysis['analysis']['octonionic_seed'], 8)
+        self.assertEqual(analysis['analysis']['triality_corolla'], 8)
+        self.assertEqual(analysis['analysis']['first_tower_element'], 19)
 
 
 def run_tests():
