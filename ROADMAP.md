@@ -20,7 +20,7 @@ The `notes-cg-7.md` document outlines profound mathematical connections between 
 
 ### 1. Hopf Algebra Formalization
 
-**Context**: The notes suggest that e9's Matula structures and the daemon's "encapsulate/purify/project" cycle align with Connes-Kreimer Hopf algebras.
+**Context**: The notes suggest that e9's Matula structures and the daemon's "encapsulate/purify/project" cycle align with Connes-Kreimer Hopf algebras (a mathematical structure that formalizes how rooted trees can be systematically cut and composed, discovered in the context of quantum field theory renormalization).
 
 **Potential Work**:
 - Formalize the connection between Matula tree operations and Hopf algebra cuts
@@ -139,12 +139,12 @@ If there's desire to expand the current implementation **without** diving into a
 
 To maintain clarity and focus, the following are **explicitly not planned**:
 
-- ❌ Implementing numerical solvers or integration with numerical analysis packages
-- ❌ Creating a full computer algebra system
-- ❌ Building quantum computing or cryptographic applications
-- ❌ Developing GUI applications or web interfaces
-- ❌ Performance optimization beyond reasonable bounds
-- ❌ Supporting languages other than Python without clear justification
+- ❌ **Implementing numerical solvers or integration with numerical analysis packages** - e9 is a conceptual framework for understanding primes, not a numerical computation tool
+- ❌ **Creating a full computer algebra system** - The focus is on the eigenvalue concept, not general symbolic computation
+- ❌ **Building quantum computing or cryptographic applications** - While primes are important in cryptography, e9's purpose is mathematical insight, not practical applications
+- ❌ **Developing GUI applications or web interfaces** - The CLI and Python API provide sufficient interaction; GUIs would add complexity without enhancing understanding
+- ❌ **Performance optimization beyond reasonable bounds** - The framework is for exploration and education, not high-performance computing
+- ❌ **Supporting languages other than Python without clear justification** - Python's clarity serves the pedagogical mission; other languages would fragment maintenance
 
 ## Decision Framework
 
