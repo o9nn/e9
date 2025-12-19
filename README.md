@@ -184,10 +184,17 @@ Or with verbose output:
 python -m unittest test_e9 -v
 ```
 
-All 33 tests should pass, including new tests for:
-- Matula encoding/decoding
-- Index persona classification
-- Cognitive grammar analysis
+All 48 tests should pass, including tests for:
+- Original prime eigenvalue functions (18 tests)
+- Matula encoding/decoding (4 tests)
+- Index persona classification (5 tests)
+- Cognitive grammar analysis (3 tests)
+- Connes-Kreimer Hopf algebra (15 tests - NEW):
+  - A000081 rooted tree counts
+  - Ion layer structure and Butcher recursion
+  - Prime tower generation
+  - Grafting operation
+  - Complete Hopf algebra analysis
 
 ## Mathematical Framework
 
@@ -240,6 +247,15 @@ The extended framework shows:
 - `print_index_persona_table(max_index: int)`: Display formatted persona table
 - `print_cognitive_grammar(prime_bound: int)`: Display formatted grammar analysis
 
+**Connes-Kreimer Hopf Algebra (NEW):**
+- `rooted_trees_count(n: int) -> int`: Get A000081(n) - rooted unlabeled trees
+- `ion_layer(n: int) -> Dict`: Calculate ion layer with Butcher recursion
+- `generate_ion_sequence(max_order: int) -> List[Dict]`: Generate ion sequence
+- `prime_tower(seed: int, depth: int) -> List[int]`: Generate prime tower (unary grafting)
+- `graft_operation(matula_number: int) -> int`: Grafting in Matula coordinates
+- `analyze_hopf_structure(max_order: int) -> Dict`: Complete Hopf algebra analysis
+- `print_hopf_analysis(max_order: int)`: Display formatted Hopf analysis
+
 ### PrimeEgregore Class
 
 **Original methods:**
@@ -253,7 +269,7 @@ The extended framework shows:
 
 ## CLI Commands
 
-The CLI now supports 8 commands:
+The CLI now supports 12 commands:
 
 **Original:**
 - `eigenvalue <index>`: Get prime eigenvalue
@@ -261,19 +277,98 @@ The CLI now supports 8 commands:
 - `analyze <index>`: Full egregore analysis
 - `daemon <index>`: Show three-phase daemon process
 
-**New:**
+**Index Injection:**
 - `matula -n <number>`: Convert number to Matula structure
 - `matula -s <structure>`: Convert structure to number
 - `persona <index>`: Show index persona/character
 - `persona-table [count]`: Display index persona table
 - `grammar <bound>`: Analyze cognitive grammar
 
+**Connes-Kreimer Hopf Algebra (NEW):**
+- `hopf [order]`: Analyze Hopf algebra structure (default: order 10)
+- `ion <order>`: Show ion layer at specific order
+- `tower <seed> <depth>`: Generate prime tower
+- `a000081 [count]`: Show A000081 sequence (default: 15 terms)
+
 Example:
 ```bash
+# Index injection
 python cli.py persona 6 -p
 python cli.py persona-table 10
 python cli.py grammar 23
+
+# Hopf algebra
+python cli.py hopf 8
+python cli.py ion 5 -v
+python cli.py tower 8 5
+python cli.py a000081 10
 ```
+
+## Mathematical Framework (Extended)
+
+### Connes-Kreimer Hopf Algebra
+
+The implementation now includes the deep mathematical structures from the research notes:
+
+**A000081 - Rooted Unlabeled Trees:**
+- The universal grammar of composition
+- Basis objects for elementary differentials (Butcher trees)
+- Foundation of B-series in numerical analysis
+- Core of the Connes-Kreimer Hopf algebra
+
+**The Butcher Recursion (Ion Layers):**
+```
+fib(n) = tot(n-1)        # fiber = previous total
+tot(n) = A000081(n+1)    # total = rooted tree count  
+bas(n) = tot(n) - fib(n) # base = new differentials
+max(n) = p_max(n-1)      # unary graft (n≥5, max(4)=8)
+```
+
+This captures the fiber/base/total decomposition that mirrors the Connes-Kreimer coproduct.
+
+**Prime Tower (Unary Grafting):**
+- The B_+ operator: adding a single root to a tree
+- In Matula coordinates: graft(tree) = p_Matula(tree)
+- Starting from octonionic seed (8): 8 → 19 → 67 → 331 → 2221 → 19577 → ...
+- Creates shell structure beyond division algebra limit
+
+**Connection to Moonshine:**
+- Monster VOA partition function: J(τ) = j(τ) - 744
+- The constant 744 = A000081(10) + 5² = 719 + 25
+- Both structures expand in the same universal operadic basis
+- The -744 is the renormalization constant (vacuum subtraction)
+
+### The Inevitability Chain
+
+1. Division algebras give privileged ternary corolla at 8 (triality)
+2. Adding composite branching forces the full rooted-tree operad
+3. Rooted-tree operads demand prime factor coordinates (Matula)
+4. Prime powers appear as natural stratification of composition depth
+
+> "Octonions end geometry at 8. Rooted trees take over dynamics beyond it. A000081 is the universal grammar both sides must speak."
+
+## Examples
+
+Run the examples to see the concepts in action:
+
+```bash
+# Original examples
+python examples.py
+
+# Index injection examples
+python examples_index_injection.py
+
+# Connes-Kreimer Hopf algebra examples (NEW)
+python examples_hopf_algebra.py
+```
+
+The Hopf algebra examples demonstrate:
+- A000081 (rooted unlabeled trees)
+- The Butcher recursion (ion layers)
+- Prime tower (unary grafting)
+- Fiber/base/total decomposition
+- Connection to moonshine
+- Complete Hopf algebra analysis
 
 ## License
 
