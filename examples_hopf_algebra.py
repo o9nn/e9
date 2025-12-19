@@ -242,6 +242,11 @@ def example_full_analysis():
 
 def main():
     """Run all Hopf algebra examples."""
+    import sys
+    
+    # Check if running in non-interactive mode (for CI/automated testing)
+    non_interactive = '--non-interactive' in sys.argv or '--no-pause' in sys.argv
+    
     print("\n")
     print("╔" + "=" * 78 + "╗")
     print("║" + " " * 78 + "║")
@@ -261,9 +266,11 @@ def main():
     ]
     
     for i, example_func in enumerate(examples, 1):
-        if i > 1:
+        if i > 1 and not non_interactive:
             input("\nPress Enter to continue to next example...")
             print("\n")
+        elif i > 1 and non_interactive:
+            print("\n" + "=" * 80 + "\n")
         example_func()
     
     print("\n")

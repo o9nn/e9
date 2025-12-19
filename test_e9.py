@@ -469,16 +469,21 @@ class TestHopfAlgebra(unittest.TestCase):
         """Test ion layer with specific known values from notes."""
         # From notes-clo45-10.md
         layer_4 = ion_layer(4)
-        self.assertEqual(layer_4['tot'], 9)  # A000081(5)
+        # A000081(5) = 9 (rooted trees with 5 nodes)
+        self.assertEqual(layer_4['tot'], 9)
         self.assertEqual(layer_4['fib'], 4)
         self.assertEqual(layer_4['bas'], 5)
-        self.assertEqual(layer_4['max'], 8)  # Octonionic seed
+        # max=8 is the octonionic seed (triality corolla, ternary root with 3 children)
+        self.assertEqual(layer_4['max'], 8)
         
         layer_5 = ion_layer(5)
-        self.assertEqual(layer_5['tot'], 20)  # A000081(6)
+        # A000081(6) = 20 (rooted trees with 6 nodes)
+        self.assertEqual(layer_5['tot'], 20)
+        # fib(5) = tot(4) = 9 (Butcher recursion: fiber = previous total)
         self.assertEqual(layer_5['fib'], 9)
         self.assertEqual(layer_5['bas'], 11)
-        self.assertEqual(layer_5['max'], 19)  # p_8 = 19
+        # max=19 = p_8 = 19 (first step in prime tower from octonionic seed)
+        self.assertEqual(layer_5['max'], 19)
     
     def test_generate_ion_sequence(self):
         """Test generation of ion sequence."""

@@ -433,9 +433,12 @@ def is_prime(n: int) -> bool:
     return True
 
 
+@lru_cache(maxsize=None)
 def nth_prime(n: int) -> int:
     """
     Get the nth prime number (1-indexed).
+    
+    Results are cached for performance.
     
     Args:
         n: The index of the prime to retrieve (1 for first prime)
@@ -730,6 +733,11 @@ def print_cognitive_grammar(prime_bound: int):
 # Connes-Kreimer Hopf Algebra & Rooted Tree Sequences
 # ============================================================================
 
+# Maximum depth for prime tower to avoid slow nth_prime computation
+# (nth_prime becomes slow for n > 200,000)
+MAX_PRIME_TOWER_DEPTH = 5
+
+
 @lru_cache(maxsize=None)
 def rooted_trees_count(n: int) -> int:
     """
@@ -775,7 +783,11 @@ def rooted_trees_count(n: int) -> int:
     # This is a simplified version that's good enough for moderate n
     # T(n) ≈ exponential growth, but we compute exactly when needed
     # For now, return an approximation or raise error for very large n
-    raise NotImplementedError(f"rooted_trees_count not implemented for n={n} (too large)")
+    raise NotImplementedError(
+        f"rooted_trees_count not implemented for n={n} "
+        f"(only values n <= {len(known)-1} are precomputed). "
+        f"For larger n, consider using specialized libraries like sympy or sage."
+    )
 
 
 def ion_layer(n: int) -> Dict[str, int]:
@@ -993,8 +1005,8 @@ def analyze_hopf_structure(max_order: int = 10) -> Dict[str, Any]:
         base_gaps.append(maxs[i] - maxs[i-1])
     
     # Get the prime tower starting from octonionic seed
-    # Limit depth to 5 to avoid very large primes that are slow to compute
-    tower = prime_tower(8, min(5, max_order))
+    # Limit depth to MAX_PRIME_TOWER_DEPTH to avoid very large primes that are slow to compute
+    tower = prime_tower(8, min(MAX_PRIME_TOWER_DEPTH, max_order))
     
     return {
         'ion_sequence': ion_seq,
