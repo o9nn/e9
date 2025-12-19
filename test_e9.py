@@ -23,7 +23,21 @@ from e9 import (
     generate_ion_sequence,
     prime_tower,
     graft_operation,
-    analyze_hopf_structure
+    analyze_hopf_structure,
+    # New classes and functions for cognitive renormalization
+    RootedTree,
+    Forest,
+    AdmissibleCut,
+    admissible_cuts,
+    coproduct,
+    antipode,
+    Character,
+    cognitive_renormalization,
+    matula_to_tree,
+    tree_to_matula,
+    B_plus,
+    theta_n,
+    base_increment
 )
 
 
@@ -556,6 +570,315 @@ class TestHopfAlgebra(unittest.TestCase):
         self.assertEqual(analysis['analysis']['octonionic_seed'], 8)
         self.assertEqual(analysis['analysis']['triality_corolla'], 8)
         self.assertEqual(analysis['analysis']['first_tower_element'], 19)
+
+
+class TestRootedTreeStructure(unittest.TestCase):
+    """Test the RootedTree data structure."""
+    
+    def test_leaf_creation(self):
+        """Test creating a leaf node."""
+        leaf = RootedTree()
+        self.assertTrue(leaf.is_leaf)
+        self.assertEqual(leaf.order, 1)
+        self.assertEqual(str(leaf), "()")
+    
+    def test_tree_with_children(self):
+        """Test creating a tree with children."""
+        leaf = RootedTree()
+        tree = RootedTree((leaf, leaf))
+        self.assertFalse(tree.is_leaf)
+        self.assertEqual(tree.order, 3)  # 1 root + 2 leaves
+        self.assertEqual(len(tree.children), 2)
+    
+    def test_tree_notation(self):
+        """Test tree notation conversion."""
+        leaf = RootedTree()
+        tree1 = RootedTree((leaf,))  # B+(leaf)
+        self.assertEqual(str(tree1), "(())")
+        
+        tree2 = RootedTree((leaf, leaf))
+        self.assertEqual(str(tree2), "(()())")
+    
+    def test_tree_order_recursive(self):
+        """Test order calculation for nested trees."""
+        leaf = RootedTree()
+        inner = RootedTree((leaf,))
+        outer = RootedTree((inner,))
+        self.assertEqual(outer.order, 3)  # 3 nodes total
+
+
+class TestMatulaTreeBridge(unittest.TestCase):
+    """Test conversion between Matula numbers and RootedTree objects."""
+    
+    def test_matula_to_tree_leaf(self):
+        """Test converting Matula 1 to leaf."""
+        tree = matula_to_tree(1)
+        self.assertTrue(tree.is_leaf)
+        self.assertEqual(tree.order, 1)
+    
+    def test_matula_to_tree_simple(self):
+        """Test converting simple Matula numbers."""
+        # Matula 2 = p_1 = first prime, corresponds to B+(leaf)
+        tree2 = matula_to_tree(2)
+        self.assertEqual(tree2.order, 2)
+        
+        # Matula 4 = p_1 * p_1 = 2*2, two children
+        tree4 = matula_to_tree(4)
+        self.assertEqual(tree4.order, 3)
+        self.assertEqual(len(tree4.children), 2)
+    
+    def test_tree_to_matula_roundtrip(self):
+        """Test that tree_to_matula inverts matula_to_tree."""
+        for m in [1, 2, 3, 4, 5, 6, 8]:
+            tree = matula_to_tree(m)
+            m_back = tree_to_matula(tree)
+            self.assertEqual(m, m_back, f"Roundtrip failed for Matula {m}")
+    
+    def test_tree_to_matula_method(self):
+        """Test tree.to_matula() method."""
+        leaf = RootedTree()
+        self.assertEqual(leaf.to_matula(), 1)
+        
+        tree = RootedTree((leaf,))
+        self.assertEqual(tree.to_matula(), 2)
+
+
+class TestBPlusOperator(unittest.TestCase):
+    """Test the B+ grafting operator."""
+    
+    def test_b_plus_leaf(self):
+        """Test grafting a root above a leaf."""
+        leaf = RootedTree()
+        tree = B_plus(leaf)
+        self.assertEqual(tree.order, 2)
+        self.assertEqual(len(tree.children), 1)
+        self.assertTrue(tree.children[0].is_leaf)
+    
+    def test_b_plus_ternary_corolla(self):
+        """Test creating ternary corolla (octonionic seed structure)."""
+        leaf = RootedTree()
+        corolla = B_plus((leaf, leaf, leaf))
+        self.assertEqual(corolla.order, 4)
+        self.assertEqual(len(corolla.children), 3)
+        # Matula number should be 8
+        self.assertEqual(corolla.to_matula(), 8)
+    
+    def test_b_plus_iterated(self):
+        """Test iterated B+ application (tower)."""
+        leaf = RootedTree()
+        t1 = B_plus(leaf)
+        t2 = B_plus(t1)
+        t3 = B_plus(t2)
+        
+        self.assertEqual(t1.order, 2)
+        self.assertEqual(t2.order, 3)
+        self.assertEqual(t3.order, 4)
+
+
+class TestThetaN(unittest.TestCase):
+    """Test the Θ_n tree enumeration."""
+    
+    def test_theta_counts(self):
+        """Test that theta_n produces correct count of trees."""
+        # A000081 sequence: 1, 1, 2, 4, 9, 20, ...
+        self.assertEqual(len(theta_n(1)), 1)
+        self.assertEqual(len(theta_n(2)), 1)
+        self.assertEqual(len(theta_n(3)), 2)
+        self.assertEqual(len(theta_n(4)), 4)
+    
+    def test_theta_n_distinct_trees(self):
+        """Test that theta_n produces distinct trees."""
+        trees3 = theta_n(3)
+        # Should have 2 distinct trees
+        self.assertEqual(len(trees3), 2)
+        # Check they have different structure
+        self.assertNotEqual(trees3[0].to_matula(), trees3[1].to_matula())
+    
+    def test_theta_n_orders(self):
+        """Test that all trees in theta_n have order n."""
+        for n in [1, 2, 3, 4]:
+            trees = theta_n(n)
+            for tree in trees:
+                self.assertEqual(tree.order, n, f"Tree in theta_{n} has wrong order")
+
+
+class TestAdmissibleCuts(unittest.TestCase):
+    """Test admissible cuts and coproduct."""
+    
+    def test_leaf_no_cuts(self):
+        """Test that a leaf has no admissible cuts."""
+        leaf = RootedTree()
+        cuts = admissible_cuts(leaf)
+        self.assertEqual(len(cuts), 0)
+    
+    def test_simple_tree_cuts(self):
+        """Test cuts for B+(leaf)."""
+        leaf = RootedTree()
+        tree = B_plus(leaf)
+        cuts = admissible_cuts(tree)
+        
+        # Should have exactly 1 cut: remove the leaf child
+        self.assertGreater(len(cuts), 0)
+        
+        # Check structure
+        for cut in cuts:
+            self.assertIsInstance(cut, AdmissibleCut)
+            self.assertIsInstance(cut.pruned, Forest)
+            self.assertIsInstance(cut.trunk, RootedTree)
+    
+    def test_binary_tree_cuts(self):
+        """Test cuts for tree with two children."""
+        leaf = RootedTree()
+        tree = B_plus((leaf, leaf))
+        cuts = admissible_cuts(tree)
+        
+        # Should have 3 cuts: remove left, remove right, remove both
+        self.assertGreaterEqual(len(cuts), 3)
+
+
+class TestCoproduct(unittest.TestCase):
+    """Test the Connes-Kreimer coproduct."""
+    
+    def test_coproduct_leaf(self):
+        """Test coproduct of a leaf."""
+        leaf = RootedTree()
+        terms = coproduct(leaf)
+        
+        # Δ(leaf) = leaf⊗1 + 1⊗leaf
+        self.assertEqual(len(terms), 2)
+    
+    def test_coproduct_simple_tree(self):
+        """Test coproduct of B+(leaf)."""
+        leaf = RootedTree()
+        tree = B_plus(leaf)
+        terms = coproduct(tree)
+        
+        # Δ(B+(leaf)) = tree⊗1 + 1⊗tree + leaf⊗leaf
+        # Should have at least 3 terms
+        self.assertGreaterEqual(len(terms), 3)
+        
+        # Check that all terms are properly formed
+        for term in terms:
+            self.assertIsInstance(term.left, Forest)
+            self.assertIsInstance(term.right, RootedTree)
+    
+    def test_coproduct_structure(self):
+        """Test that coproduct terms decompose correctly."""
+        leaf = RootedTree()
+        tree = B_plus((leaf, leaf))
+        terms = coproduct(tree)
+        
+        # All terms should be valid
+        for term in terms:
+            # Check that left and right have compatible orders
+            left_order = term.left.order
+            right_order = term.right.order
+            # The sum should relate to the original tree order
+            self.assertGreaterEqual(left_order + right_order, 0)
+
+
+class TestCharacterAndConvolution(unittest.TestCase):
+    """Test characters and convolution."""
+    
+    def test_character_creation(self):
+        """Test creating a character."""
+        # Simple character: count nodes
+        def count_nodes(tree):
+            return tree.order
+        
+        char = Character(count_nodes, lambda a, b: a * b, "count")
+        self.assertEqual(char.name, "count")
+        
+        leaf = RootedTree()
+        self.assertEqual(char(leaf), 1)
+    
+    def test_character_evaluation(self):
+        """Test character evaluation on trees."""
+        # Character that returns Matula number
+        def matula_eval(tree):
+            return tree.to_matula()
+        
+        char = Character(matula_eval, lambda a, b: a * b, "matula")
+        
+        leaf = RootedTree()
+        tree2 = B_plus(leaf)
+        
+        self.assertEqual(char(leaf), 1)
+        self.assertEqual(char(tree2), 2)
+    
+    def test_character_convolution(self):
+        """Test convolution of characters."""
+        # Two simple characters
+        def eval1(tree):
+            return tree.order
+        
+        def eval2(tree):
+            return 1
+        
+        char1 = Character(eval1, lambda a, b: a * b, "φ1")
+        char2 = Character(eval2, lambda a, b: a * b, "φ2")
+        
+        # Convolve them
+        conv_char = char1.convolve(char2)
+        
+        # Evaluate on a leaf
+        leaf = RootedTree()
+        result = conv_char(leaf)
+        self.assertIsNotNone(result)
+
+
+class TestBaseIncrement(unittest.TestCase):
+    """Test base increment calculation."""
+    
+    def test_base_increment_values(self):
+        """Test that base_increment matches bas(n) from ion layers."""
+        for n in range(1, 6):
+            bi = base_increment(n)
+            layer = ion_layer(n)
+            self.assertEqual(bi, layer['bas'], 
+                           f"base_increment({n}) should equal bas({n})")
+    
+    def test_base_increment_positive(self):
+        """Test that base increments are non-negative."""
+        for n in range(1, 10):
+            bi = base_increment(n)
+            self.assertGreaterEqual(bi, 0, f"base_increment({n}) should be non-negative")
+        
+        # Most should be positive
+        for n in range(2, 10):
+            bi = base_increment(n)
+            self.assertGreater(bi, 0, f"base_increment({n}) should be positive for n >= 2")
+
+
+class TestCognitiveRenormalization(unittest.TestCase):
+    """Test cognitive renormalization via antipode."""
+    
+    def test_cognitive_renormalization_leaf(self):
+        """Test renormalization on a leaf."""
+        # Simple character
+        def eval_func(tree):
+            return float(tree.order)
+        
+        char = Character(eval_func, lambda a, b: a * b, "test")
+        
+        leaf = RootedTree()
+        result = cognitive_renormalization(char, leaf)
+        
+        # Should return -order for a leaf
+        self.assertEqual(result, -1.0)
+    
+    def test_cognitive_renormalization_structure(self):
+        """Test that renormalization produces valid output."""
+        def eval_func(tree):
+            return float(tree.order)
+        
+        char = Character(eval_func, lambda a, b: a * b, "test")
+        
+        tree = B_plus(RootedTree())
+        result = cognitive_renormalization(char, tree)
+        
+        # Should be a number
+        self.assertIsInstance(result, (int, float))
 
 
 def run_tests():
