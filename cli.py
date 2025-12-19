@@ -18,7 +18,14 @@ from e9 import (
     rooted_trees_count,
     ion_layer,
     prime_tower,
-    print_hopf_analysis
+    print_hopf_analysis,
+    # New cognitive renormalization functions
+    RootedTree,
+    B_plus,
+    matula_to_tree,
+    admissible_cuts,
+    coproduct,
+    base_increment
 )
 
 
@@ -233,6 +240,148 @@ def cmd_a000081(args):
     print("This is the universal grammar of composition!")
 
 
+def cmd_tree(args):
+    """Show a rooted tree and its properties."""
+    print("Rooted Tree Analysis")
+    print("=" * 60)
+    print()
+    
+    if args.matula:
+        tree = matula_to_tree(args.matula)
+        print(f"From Matula number: {args.matula}")
+    else:
+        # Build a tree interactively
+        leaf = RootedTree()
+        if args.simple:
+            tree = B_plus(leaf)
+        elif args.ternary:
+            tree = B_plus((leaf, leaf, leaf))
+        else:
+            tree = leaf
+    
+    print(f"Tree: {tree}")
+    print(f"Order (nodes): {tree.order}")
+    print(f"Matula number: {tree.to_matula()}")
+    print(f"Is leaf: {tree.is_leaf}")
+    print(f"Children: {len(tree.children)}")
+    print()
+
+
+def cmd_coproduct(args):
+    """Compute and display the coproduct of a tree."""
+    print("Coproduct Analysis (Admissible Cuts)")
+    print("=" * 60)
+    print()
+    
+    tree = matula_to_tree(args.matula)
+    print(f"Tree: {tree}")
+    print(f"Matula number: {args.matula}")
+    print(f"Order: {tree.order}")
+    print()
+    
+    # Admissible cuts
+    cuts = admissible_cuts(tree)
+    print(f"Number of admissible cuts: {len(cuts)}")
+    
+    if args.verbose and cuts:
+        print("\nAdmissible Cuts (Fiber/Trunk Decomposition):")
+        for i, cut in enumerate(cuts, 1):
+            pruned_str = [str(t) for t in cut.pruned.trees]
+            print(f"  Cut {i}: Pruned={pruned_str} ⊗ Trunk={cut.trunk}")
+    
+    print()
+    
+    # Coproduct
+    terms = coproduct(tree)
+    print(f"Coproduct Δ(tree): {len(terms)} terms")
+    
+    if args.verbose:
+        print("\nCoproduct Terms (left ⊗ right):")
+        for i, term in enumerate(terms[:10], 1):  # Show first 10
+            left_str = [str(t) for t in term.left.trees] if term.left.trees else ["1"]
+            print(f"  Term {i}: {left_str} ⊗ {term.right}")
+        if len(terms) > 10:
+            print(f"  ... and {len(terms) - 10} more terms")
+    
+    print()
+
+
+def cmd_base(args):
+    """Show base increment sequence."""
+    print("Base Increment Sequence B_n")
+    print("=" * 60)
+    print()
+    print("B_n = Θ_n - B+(Θ_{n-1})")
+    print("Measures: 'what is new at order n beyond grafted carryover'")
+    print()
+    print(f"{'n':<5} {'bas(n)':<10} {'Interpretation'}")
+    print("-" * 60)
+    
+    for n in range(0, args.max_n + 1):
+        bi = base_increment(n) if n > 0 else 1
+        
+        interpretation = ""
+        if n == 0:
+            interpretation = "Ground state"
+        elif n == 1:
+            interpretation = "First level (no fiber)"
+        elif n == 4:
+            interpretation = "Octonionic seed emerges"
+        elif n >= 5:
+            interpretation = "Prime tower regime"
+        
+        print(f"{n:<5} {bi:<10} {interpretation}")
+    
+    print()
+    print("Key: This is the sequence of NEW differentials at each order.")
+    print()
+
+
+def cmd_renorm(args):
+    """Demonstrate cognitive renormalization."""
+    print("Cognitive Renormalization")
+    print("=" * 60)
+    print()
+    print("The antipode S is the 'cognitive renormalization' operator.")
+    print("It computes counterterms to normalize nested compositions.")
+    print()
+    
+    from e9 import Character, cognitive_renormalization
+    
+    # Define character
+    def node_counter(tree):
+        return float(tree.order)
+    
+    char = Character(node_counter, lambda a, b: a * b, "φ")
+    
+    # Test on trees
+    leaf = RootedTree()
+    
+    if args.matula:
+        tree = matula_to_tree(args.matula)
+        trees = [tree]
+    else:
+        trees = [
+            leaf,
+            B_plus(leaf),
+            B_plus((leaf, leaf)),
+            B_plus(B_plus(leaf)),
+            B_plus((leaf, leaf, leaf))
+        ]
+    
+    print(f"{'Tree':<20} {'φ(tree)':<12} {'S(φ)(tree)':<15}")
+    print("-" * 60)
+    
+    for tree in trees:
+        phi_val = char(tree)
+        s_phi_val = cognitive_renormalization(char, tree)
+        print(f"{str(tree):<20} {phi_val:<12.1f} {s_phi_val:<15.2f}")
+    
+    print()
+    print("Note: The antipode applies corrections for subdivergences.")
+    print()
+
+
 def main():
     """Main CLI entry point."""
     parser = argparse.ArgumentParser(
@@ -308,6 +457,26 @@ def main():
     p_a000081.add_argument('count', type=int, nargs='?', default=15,
                           help='Number of terms to show (default: 15)')
     
+    # tree command (NEW - Cognitive renormalization)
+    p_tree = subparsers.add_parser('tree', help='Analyze a rooted tree')
+    p_tree.add_argument('-m', '--matula', type=int, help='Matula number of tree')
+    p_tree.add_argument('-s', '--simple', action='store_true', help='Use B+(leaf)')
+    p_tree.add_argument('-t', '--ternary', action='store_true', help='Use ternary corolla')
+    
+    # coproduct command (NEW - Cognitive renormalization)
+    p_coproduct = subparsers.add_parser('coproduct', help='Compute coproduct (admissible cuts)')
+    p_coproduct.add_argument('matula', type=int, help='Matula number of tree')
+    p_coproduct.add_argument('-v', '--verbose', action='store_true', help='Show all terms')
+    
+    # base command (NEW - Cognitive renormalization)
+    p_base = subparsers.add_parser('base', help='Show base increment sequence')
+    p_base.add_argument('max_n', type=int, nargs='?', default=10,
+                       help='Maximum n to show (default: 10)')
+    
+    # renorm command (NEW - Cognitive renormalization)
+    p_renorm = subparsers.add_parser('renorm', help='Demonstrate cognitive renormalization')
+    p_renorm.add_argument('-m', '--matula', type=int, help='Matula number of specific tree')
+    
     args = parser.parse_args()
     
     if not args.command:
@@ -339,6 +508,14 @@ def main():
             cmd_tower(args)
         elif args.command == 'a000081':
             cmd_a000081(args)
+        elif args.command == 'tree':
+            cmd_tree(args)
+        elif args.command == 'coproduct':
+            cmd_coproduct(args)
+        elif args.command == 'base':
+            cmd_base(args)
+        elif args.command == 'renorm':
+            cmd_renorm(args)
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
