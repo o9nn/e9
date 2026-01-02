@@ -167,12 +167,14 @@ print(tree2)  # (()()())
 
 **Primes become coordinates on tree space.** The prime tower:
 ```
-8 → 19 → 67 → 331 → 2221 → ...
+8 → 19 → 67 → 331 → 2221 → 19577 → 219613 → 3042161 → 50728129 → 997525853 → ...
 ```
 is just:
 ```
-p_8 → p_19 → p_67 → p_331 → ...
+p_8 → p_19 → p_67 → p_331 → p_2221 → ...
 ```
+
+See [PRIME_TOWER_INSIGHTS.md](PRIME_TOWER_INSIGHTS.md) for detailed analysis of each element.
 
 **In e9:**
 ```python
