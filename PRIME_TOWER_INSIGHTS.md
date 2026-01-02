@@ -49,8 +49,7 @@ The number 8 is special because:
 - **Prime:** Yes (8th prime number)
 - **Prime index:** 8
 - **Binary representation:** 10011₂
-- **Sophie Germain status:** 19 is a Sophie Germain prime (2×19+1 = 39 is not prime, but close)
-- **Twin prime:** Forms twin prime with 17
+- **Twin prime:** Forms twin prime with 17 (17, 19)
 
 **Growth from seed:** 19/8 ≈ 2.375
 
