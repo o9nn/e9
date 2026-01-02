@@ -136,7 +136,7 @@ The number 8 is special because:
 - Central digit: 3 (echoes the ternary structure of seed)
 
 **Special properties:**
-- Sum of three consecutive primes: 331 = 107 + 109 + 113 (not quite, but close pattern)
+- Sum of five consecutive primes: 331 = 59 + 61 + 67 + 71 + 73
 - Prime gaps: Distance to previous prime (317) is 14, to next prime (337) is 6
 
 **OEIS References:**
@@ -302,7 +302,7 @@ The number 8 is special because:
 - First number above 1 million in the tower
 - Growth factor approaching 14
 - Seven levels of grafting: B₊⁷(ternary corolla)
-- Digit sum (17) is prime — second occurrence of prime digit sum
+- Digit sum (17) is prime (fifth occurrence of prime digit sum in tower)
 
 **Digit properties:**
 - Decimal digits: 7
