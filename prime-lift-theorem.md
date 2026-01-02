@@ -99,8 +99,12 @@ Should emerge from the character applied to the seed tree plus lower-order terms
 | 7 | 115 | 331 | 5.80 | 115-ion |
 | 8 | 286 | 2221 | 7.71 | 286-ion |
 | 9 | 719 | 19577 | 9.88 | 719-ion |
+| 10 | 1842 | 219613 | 12.30 | 1842-ion |
+| 11 | 4766 | 3042161 | 14.93 | 4766-ion |
 
 The bi-grading $(n, w)$ shows that high-Matula trees are "rare" at each order — they're the maximally nested ones in your $B_+$-tower.
+
+See [PRIME_TOWER_INSIGHTS.md](PRIME_TOWER_INSIGHTS.md) for comprehensive analysis of the extended prime tower through level 9 (value: 997525853).
 
 **Next Step**
 

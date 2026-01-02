@@ -128,6 +128,8 @@ def example_prime_tower():
     print("  2221")
     print("   ↓ p_2221")
     print("  19577")
+    print("   ↓ (continues...)")
+    print("  219613 → 3042161 → 50728129 → 997525853 → ...")
     print()
     
     print(f"Tower: {tower}")
@@ -137,6 +139,9 @@ def example_prime_tower():
     print("  • Each step wraps the previous tree with a new root")
     print("  • In prime coordinates: iterate p_n")
     print("  • Creates the 'shell structure' beyond the division algebra limit")
+    print()
+    print("For detailed mathematical insights on each tower element, see:")
+    print("  PRIME_TOWER_INSIGHTS.md")
     print()
     
     print("Other examples:")

@@ -421,8 +421,9 @@ This captures the fiber/base/total decomposition that mirrors the Connes-Kreimer
 **Prime Tower (Unary Grafting):**
 - The B_+ operator: adding a single root to a tree
 - In Matula coordinates: graft(tree) = p_Matula(tree)
-- Starting from octonionic seed (8): 8 → 19 → 67 → 331 → 2221 → 19577 → ...
+- Starting from octonionic seed (8): 8 → 19 → 67 → 331 → 2221 → 19577 → 219613 → 3042161 → 50728129 → 997525853 → ...
 - Creates shell structure beyond division algebra limit
+- See [PRIME_TOWER_INSIGHTS.md](PRIME_TOWER_INSIGHTS.md) for detailed analysis of each tower element
 
 **Connection to Moonshine:**
 - Monster VOA partition function: J(τ) = j(τ) - 744
@@ -473,6 +474,22 @@ The Hopf algebra examples demonstrate:
 - Fiber/base/total decomposition
 - Connection to moonshine
 - Complete Hopf algebra analysis
+
+## Documentation
+
+For deeper mathematical insights, see:
+
+- **[PRIME_TOWER_INSIGHTS.md](PRIME_TOWER_INSIGHTS.md)** - Comprehensive analysis of the extended prime tower (levels 0-9)
+  - Detailed properties of each number: 8, 19, 67, 331, 2221, 19577, 219613, 3042161, 50728129, 997525853
+  - Growth rate analysis and patterns
+  - Digital root cycles and digit count progressions
+  - Connection to Hopf algebra and tree structures
+  - Computational considerations and OEIS references
+
+- **[INEVITABILITY_CHAIN.md](INEVITABILITY_CHAIN.md)** - Why rooted trees are universal
+- **[COGNITIVE_RENORMALIZATION.md](COGNITIVE_RENORMALIZATION.md)** - The antipode and renormalization
+- **[prime-lift-theorem.md](prime-lift-theorem.md)** - The formal statement of the prime lift theorem
+- **[IMPLEMENTATION_SUMMARY.md](IMPLEMENTATION_SUMMARY.md)** - Technical implementation details
 
 ## License
 
