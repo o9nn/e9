@@ -7,10 +7,37 @@ The e9 Prime Eigenvalue Function framework is **fully implemented and functional
 - ✅ Core eigenvalue concept with 3-phase daemon model
 - ✅ Index injection framework with Matula structures
 - ✅ Index persona analysis and cognitive grammar
-- ✅ Comprehensive test suite (33 tests, all passing)
-- ✅ CLI with 8 commands
+- ✅ Connes-Kreimer Hopf algebra structures (complete)
+- ✅ Cognitive renormalization with antipode (complete)
+- ✅ **Structural Dimension Theory (SDT) framework (NEW)**
+- ✅ Comprehensive test suite (115 tests, all passing)
+- ✅ CLI with 23 commands
 - ✅ Complete documentation and examples
 - ✅ Agent configuration synthesized (`.github/agents/e9.md`)
+
+## Recent Addition: Structural Dimension Theory (SDT)
+
+**Completed**: A complete framework for classifying mathematical and computational systems along three independent orthogonal axes:
+
+- **𝓢 (Structural/Ordinal)**: What compositions are admissible?
+- **𝓒 (Cardinal/Feature)**: How finely can differences be resolved?
+- **𝓡 (Relational/Interaction)**: How do entities interfere and relate?
+
+**Key Contributions**:
+- ✅ Formal axiomatization of the three-axis system
+- ✅ Classification of standard mathematical systems (ℂ, QM, Boolean, etc.)
+- ✅ Learning as feature transport framework
+- ✅ Recursonion concept (operadic fixed points)
+- ✅ Integration with e9/Matula framework
+- ✅ 40 comprehensive tests
+- ✅ Complete documentation (SDT.md)
+- ✅ 6 CLI commands
+- ✅ 8 demonstration examples
+
+**Impact**: SDT provides a conceptual correction to the common misconception that Boolean, Real, and Complex are stages of refinement. They are coordinates in a three-axis space of meaning, where:
+- Logic defines what may exist
+- Metrics define how finely it is seen
+- Algebra defines how it interacts
 
 ## Theoretical Foundations
 
