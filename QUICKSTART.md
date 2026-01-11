@@ -132,8 +132,37 @@ All 18 tests should pass.
 
 - Read the full README.md for deeper explanation
 - Explore examples.py for detailed demonstrations
+- **NEW**: Check out SDT.md for Structural Dimension Theory
+- **NEW**: Run examples_sdt.py to see the three-axis classification framework
 - Try different indices to see how composite vs prime indices relate to their eigenvalues
 - Experiment with projection limits to see daemon reach
+
+## Structural Dimension Theory (NEW)
+
+The framework now includes SDT—a classification system for mathematical structures:
+
+```python
+from sdt import classify_system, COMPLEX_NUMBERS
+
+# Classify complex numbers
+print(classify_system("complex"))
+# Output: (Unary, Real, Dyonion)
+
+# Key insight: ℂ is NOT "more precise" than ℝ
+# It's ℝ extended along the RELATIONAL axis
+```
+
+**The Three Axes:**
+- **𝓢 (Structural)**: What can be composed?
+- **𝓒 (Cardinal)**: How finely is it measured?
+- **𝓡 (Relational)**: How do entities interact?
+
+```bash
+# Try the CLI commands
+python cli.py sdt                     # Show framework summary
+python cli.py sdt-classify quantum    # Classify quantum mechanics
+python cli.py sdt-examples            # See all classifications
+```
 
 ## Philosophy
 

@@ -28,6 +28,18 @@ from e9 import (
     base_increment
 )
 
+# Import SDT functions
+from sdt import (
+    classify_system,
+    get_all_classifications,
+    print_sdt_summary,
+    print_classifications,
+    print_axes_details,
+    create_neural_network_learning,
+    create_symbolic_learning,
+    create_matula_recursonion,
+)
+
 
 def cmd_eigenvalue(args):
     """Get the prime eigenvalue for a given index."""
@@ -382,6 +394,85 @@ def cmd_renorm(args):
     print()
 
 
+def cmd_sdt_summary(args):
+    """Show SDT framework summary."""
+    print_sdt_summary()
+    print()
+
+
+def cmd_sdt_axes(args):
+    """Show detailed axis information."""
+    print_axes_details()
+    print()
+
+
+def cmd_sdt_classify(args):
+    """Classify a mathematical system."""
+    sdt_type = classify_system(args.system)
+    
+    if sdt_type is None:
+        print(f"Unknown system: {args.system}")
+        print("\nKnown systems:")
+        print("  complex, quantum, boolean, real, rooted_trees, matula, e9")
+        return
+    
+    print(f"\nSDT Classification: {args.system}")
+    print("=" * 70)
+    print(f"\n{sdt_type}\n")
+    
+    info = sdt_type.to_dict()
+    print(f"𝓢 (Structural): {info['structural']}")
+    print(f"   {info['structural_desc']}")
+    print()
+    print(f"𝓒 (Cardinal): {info['cardinal']}")
+    print(f"   {info['cardinal_desc']}")
+    print()
+    print(f"𝓡 (Relational): {info['relational']}")
+    print(f"   {info['relational_desc']}")
+    print()
+
+
+def cmd_sdt_examples(args):
+    """Show example system classifications."""
+    print_classifications()
+    print()
+
+
+def cmd_sdt_learning(args):
+    """Show learning systems as transport."""
+    print("\n" + "=" * 70)
+    print("LEARNING AS FEATURE TRANSPORT")
+    print("=" * 70)
+    
+    nn = create_neural_network_learning()
+    sym = create_symbolic_learning()
+    
+    if args.system == "neural" or args.system == "all":
+        print(nn.describe())
+    
+    if args.system == "symbolic" or args.system == "all":
+        print(sym.describe())
+    
+    if args.system == "all":
+        print("\n" + "=" * 70)
+        print("KEY INSIGHT:")
+        print("=" * 70)
+        print("\nNeural and Symbolic learning operate in different SDT spaces:")
+        print(f"  Neural:   {nn.sdt_type}")
+        print(f"  Symbolic: {sym.sdt_type}")
+        print("\nThey are orthogonal, not competitive.")
+        print("Integration requires explicit functors between axes.")
+        print()
+
+
+def cmd_sdt_recursonion(args):
+    """Show recursonion examples."""
+    matula = create_matula_recursonion()
+    
+    print(matula.describe())
+    print()
+
+
 def main():
     """Main CLI entry point."""
     parser = argparse.ArgumentParser(
@@ -477,6 +568,23 @@ def main():
     p_renorm = subparsers.add_parser('renorm', help='Demonstrate cognitive renormalization')
     p_renorm.add_argument('-m', '--matula', type=int, help='Matula number of specific tree')
     
+    # SDT commands (NEW - Structural Dimension Theory)
+    p_sdt_summary = subparsers.add_parser('sdt', help='Show SDT framework summary')
+    
+    p_sdt_axes = subparsers.add_parser('sdt-axes', help='Show detailed axis information')
+    
+    p_sdt_classify = subparsers.add_parser('sdt-classify', help='Classify a mathematical system')
+    p_sdt_classify.add_argument('system', type=str, help='System to classify (e.g., complex, quantum, boolean)')
+    
+    p_sdt_examples = subparsers.add_parser('sdt-examples', help='Show example classifications')
+    
+    p_sdt_learning = subparsers.add_parser('sdt-learning', help='Show learning as transport')
+    p_sdt_learning.add_argument('system', type=str, nargs='?', default='all',
+                               choices=['neural', 'symbolic', 'all'],
+                               help='Learning system to show (default: all)')
+    
+    p_sdt_recursonion = subparsers.add_parser('sdt-recursonion', help='Show recursonion examples')
+    
     args = parser.parse_args()
     
     if not args.command:
@@ -516,6 +624,18 @@ def main():
             cmd_base(args)
         elif args.command == 'renorm':
             cmd_renorm(args)
+        elif args.command == 'sdt':
+            cmd_sdt_summary(args)
+        elif args.command == 'sdt-axes':
+            cmd_sdt_axes(args)
+        elif args.command == 'sdt-classify':
+            cmd_sdt_classify(args)
+        elif args.command == 'sdt-examples':
+            cmd_sdt_examples(args)
+        elif args.command == 'sdt-learning':
+            cmd_sdt_learning(args)
+        elif args.command == 'sdt-recursonion':
+            cmd_sdt_recursonion(args)
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
