@@ -31,6 +31,24 @@ Examples from the persona table:
 - Index 6 `(()(()))` → Prime 13 (first mixed ensemble—2×3)
 - Index 9 `((())((()))` → Prime 23 (ternary squared—3²)
 
+### Structural Dimension Theory (SDT)
+
+**NEW:** The framework now includes **Structural Dimension Theory (SDT)** - a classification system for mathematical and computational systems along three independent orthogonal axes:
+
+- **𝓢 (Structural/Ordinal)**: What compositions are admissible? (categorical, operadic, logical)
+- **𝓒 (Cardinal/Feature)**: How finely can differences be resolved? (metric, measurable, quantitative)
+- **𝓡 (Relational/Interaction)**: How do entities interfere and relate? (algebraic, geometric, topological)
+
+**Key Insight:** Boolean, Real, and Complex are not stages of refinement—they are coordinates in a three-axis space of meaning.
+
+#### SDT Classifications
+
+- **Complex Numbers (ℂ)**: (Unary, Real, Dyonion) - ℂ is ℝ extended along the relational axis
+- **Quantum Mechanics**: (Unary, Real, Polynonion) - Relational geometry, not weird logic
+- **e9/Matula Trees**: (Self-similar, Natural, Recursonion) - Operadic fixed points
+
+See [SDT.md](SDT.md) for the complete framework and [examples_sdt.py](examples_sdt.py) for demonstrations.
+
 ## Installation
 
 Simply clone this repository:
@@ -141,6 +159,25 @@ print(f"Alphabet size: {grammar['alphabet_size']}")
 print(f"Capabilities: {grammar['capabilities']}")
 ```
 
+### Structural Dimension Theory (SDT) (NEW)
+
+```python
+from sdt import classify_system, COMPLEX_NUMBERS, QUANTUM_MECHANICS
+
+# Classify a mathematical system
+sdt_type = classify_system("complex")
+print(sdt_type)  # (Unary, Real, Dyonion)
+
+# Access standard classifications
+print(COMPLEX_NUMBERS)  # (Unary, Real, Dyonion)
+print(QUANTUM_MECHANICS)  # (Unary, Real, Polynonion)
+
+# Understanding learning as transport
+from sdt import create_neural_network_learning
+nn = create_neural_network_learning()
+print(nn.sdt_type)  # (N-ary, Real, Polynonion)
+```
+
 ## Examples
 
 Run the examples to see the concept in action:
@@ -149,8 +186,11 @@ Run the examples to see the concept in action:
 # Original examples
 python examples.py
 
-# Index injection examples (NEW)
+# Index injection examples
 python examples_index_injection.py
+
+# Structural Dimension Theory examples (NEW)
+python examples_sdt.py
 ```
 
 These demonstrate:
@@ -161,6 +201,14 @@ These demonstrate:
 - Purification into prime eigenvalues
 - Projection through multiples
 - Full daemon analysis
+
+**SDT examples (examples_sdt.py) (NEW):**
+- Three-axis classification system (𝓢, 𝓒, 𝓡)
+- Complex numbers as relational extension of reals
+- Quantum mechanics as relational geometry
+- Learning as feature transport over ordinal graphs
+- Recursonions and operadic fixed points
+- Axis orthogonality demonstrations
 
 **Index injection examples (examples_index_injection.py):**
 - Matula tree structures
@@ -175,21 +223,44 @@ These demonstrate:
 Run the test suite:
 
 ```bash
+# Test e9 framework
 python test_e9.py
+
+# Test SDT framework (NEW)
+python test_sdt.py
+
+# Or run all tests with verbose output
+python -m unittest test_e9 test_sdt -v
 ```
 
-Or with verbose output:
-
-```bash
-python -m unittest test_e9 -v
-```
-
-All 48 tests should pass, including tests for:
+All 115 tests should pass (75 for e9, 40 for SDT), including tests for:
 - Original prime eigenvalue functions (18 tests)
 - Matula encoding/decoding (4 tests)
 - Index persona classification (5 tests)
 - Cognitive grammar analysis (3 tests)
-- Connes-Kreimer Hopf algebra (15 tests - NEW):
+- Connes-Kreimer Hopf algebra (15 tests):
+  - A000081 rooted tree counts
+  - Ion layer structure and Butcher recursion
+  - Prime tower generation
+  - Grafting operation
+  - Complete Hopf algebra analysis
+- Cognitive renormalization (30 tests):
+  - Rooted trees and forests
+  - Admissible cuts
+  - Coproduct computation
+  - Antipode (renormalization)
+  - Characters and convolution
+  - B+ grafting operator
+  - Base increments
+- **Structural Dimension Theory (40 tests - NEW)**:
+  - Axis definitions (Structural, Cardinal, Relational)
+  - SDT type system
+  - Standard system classifications
+  - Complex numbers as relational extension
+  - Quantum mechanics classification
+  - Learning as feature transport
+  - Recursonions and operadic fixed points
+  - Axis orthogonality verification
   - A000081 rooted tree counts
   - Ion layer structure and Butcher recursion
   - Prime tower generation
@@ -284,7 +355,7 @@ The extended framework shows:
 
 ## CLI Commands
 
-The CLI now supports 17 commands:
+The CLI now supports 23 commands:
 
 **Original:**
 - `eigenvalue <index>`: Get prime eigenvalue
@@ -305,11 +376,19 @@ The CLI now supports 17 commands:
 - `tower <seed> <depth>`: Generate prime tower
 - `a000081 [count]`: Show A000081 sequence (default: 15 terms)
 
-**Cognitive Renormalization (NEW):**
+**Cognitive Renormalization:**
 - `tree [-m MATULA | -s | -t]`: Analyze a rooted tree
 - `coproduct <matula> [-v]`: Compute coproduct (admissible cuts)
 - `base [max_n]`: Show base increment sequence
 - `renorm [-m MATULA]`: Demonstrate cognitive renormalization (antipode)
+
+**Structural Dimension Theory (NEW):**
+- `sdt`: Show SDT framework summary
+- `sdt-axes`: Show detailed axis information
+- `sdt-classify <system>`: Classify a mathematical system
+- `sdt-examples`: Show example classifications
+- `sdt-learning [neural|symbolic|all]`: Show learning as transport
+- `sdt-recursonion`: Show recursonion examples
 
 Example:
 ```bash
@@ -324,11 +403,17 @@ python cli.py ion 5 -v
 python cli.py tower 8 5
 python cli.py a000081 10
 
-# Cognitive renormalization (NEW)
+# Cognitive renormalization
 python cli.py tree -t                # Analyze ternary corolla
 python cli.py coproduct 8 -v         # Show coproduct of Matula 8
 python cli.py base 10                # Show base increments
 python cli.py renorm                 # Demonstrate antipode
+
+# Structural Dimension Theory (NEW)
+python cli.py sdt                    # Show framework summary
+python cli.py sdt-classify complex   # Classify complex numbers
+python cli.py sdt-examples           # Show all classifications
+python cli.py sdt-learning neural    # Neural networks as transport
 ```
 
 ## Mathematical Framework (Extended)
@@ -478,6 +563,14 @@ The Hopf algebra examples demonstrate:
 ## Documentation
 
 For deeper mathematical insights, see:
+
+- **[SDT.md](SDT.md)** - Complete Structural Dimension Theory framework (NEW)
+  - Three-axis classification system (𝓢, 𝓒, 𝓡)
+  - Axioms and formal definitions
+  - Standard system classifications (ℂ, QM, Boolean, etc.)
+  - Learning as feature transport
+  - Recursonions and operadic fixed points
+  - Connection to e9/Matula framework
 
 - **[PRIME_TOWER_INSIGHTS.md](PRIME_TOWER_INSIGHTS.md)** - Comprehensive analysis of the extended prime tower (levels 0-9)
   - Detailed properties of each number: 8, 19, 67, 331, 2221, 19577, 219613, 3042161, 50728129, 997525853
