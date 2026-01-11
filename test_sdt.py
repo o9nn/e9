@@ -154,7 +154,7 @@ class TestSDTType(unittest.TestCase):
             cardinal=CardinalAxis.REAL,
             relational=RelationalAxis.DYONION
         )
-        with self.assertRaises(Exception):  # FrozenInstanceError or AttributeError
+        with self.assertRaises(AttributeError):
             sdt.structural = StructuralAxis.BINARY
 
 
